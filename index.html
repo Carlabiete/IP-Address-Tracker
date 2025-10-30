@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=0bcae193-03fd-45cf-a502-803af4391504&lang=ru_RU"></script>
+  </head>
+  <body>
+    <div class="flex">
+      <div class="one">
+        <div class="theme" id="theme-switch">
+          <div class="light">☀️</div>
+          <div class="dark">🌑</div>
+        </div>
+        <h1>IP Address Tracker</h1>
+        <div class="searchbar">
+          <input
+            type="text"
+            placeholder="Search for any IP address or domain"
+            class="input"
+            id="search-input"
+          />
+          <button type="submit" class="btn" id="search-btn">go</button>
+        </div>
+
+        <div class="three">
+          <div class="holder">
+            <span class="label">IP Address</span>
+            <span class="text" id="ip-display">000.000.000.000</span>
+          </div>
+          <div class="holder">
+            <span class="label">Location</span>
+            <span class="text" id="location-display">Location</span>
+          </div>
+          <div class="holder">
+            <span class="label">Timezone</span>
+            <span class="text" id="timezone-display">UTC 00:00</span>
+          </div>
+          <div class="holder">
+            <span class="label">ISP</span>
+            <span class="text" id="isp-display">ISP</span>
+          </div>
+        </div>
+      </div>
+      <div class="two" id="map"></div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
