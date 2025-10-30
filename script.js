@@ -41,8 +41,6 @@ function displayData({ ip, location, isp }) {
 let map = null;
 let currentMarker = null;
 
-ymaps.ready(initMap);
-
 function initMap() {
   map = new ymaps.Map("map", {
     center: [0.0, 0.0],
@@ -80,6 +78,7 @@ function showError(error) {
 }
 
 request(ipAddress);
+ymaps.ready(initMap);
 
 searchButton.addEventListener("click", () => {
   ipAddress = searchInput.value;
