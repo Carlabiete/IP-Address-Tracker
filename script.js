@@ -6,6 +6,29 @@ const timezoneDisplay = document.getElementById("timezone-display");
 const ispDisplay = document.getElementById("isp-display");
 //const mapHolder = document.getElementById("map");
 const themeSwitch = document.getElementById("theme-switch");
+const lightTheme = document.getElementById("light-theme");
+const darkTheme = document.getElementById("dark-theme");
+
+let currentTheme = "light";
+document.documentElement.setAttribute("data-theme", currentTheme);
+
+lightTheme.addEventListener("click", () => {
+  if (currentTheme !== "light") {
+    currentTheme = "light";
+    document.documentElement.setAttribute("data-theme", currentTheme);
+    themeSwitch.classList.remove("shift");
+    document.getElementById("map").classList.remove("dark-theme");
+  }
+});
+
+darkTheme.addEventListener("click", () => {
+  if (currentTheme !== "dark") {
+    currentTheme = "dark";
+    document.documentElement.setAttribute("data-theme", currentTheme);
+    themeSwitch.classList.add("shift");
+    document.getElementById("map").classList.add("dark-theme");
+  }
+});
 
 const IP_API_KEY = "at_yKH4wGfEbDJtwoPMlgBVnZTWBokYV";
 let ipAddress = "";

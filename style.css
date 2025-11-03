@@ -1,10 +1,20 @@
 :root {
   --bg-primary: #fff;
-  /*--bg-accent: hsl(230, 55%, 65%);*/
   --bg-accent: hsl(230, 45%, 50%);
+  --bg-secondary: #000;
   --text-primary: #333;
   --text-secondary: #999;
   --text-accent: #fff;
+}
+
+[data-theme="dark"] {
+  --bg-primary: #080808;
+  /*--bg-accent: hsl(230, 55%, 65%);*/
+  --bg-secondary: #222;
+  --bg-accent: hsl(240, 40%, 10%);
+  --text-primary: #bbb;
+  --text-secondary: #555;
+  --text-accent: #bbb;
 }
 
 @font-face {
@@ -16,6 +26,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 body {
@@ -43,16 +54,19 @@ body {
   z-index: 1;
 }
 
-.two {
+.map {
   z-index: 0;
   background-color: #ddd;
   flex: 1;
   /*box-shadow: inset 0 0px 20px rgb(0 0 0 / 0.5);*/
 }
 
-/*#map {
-  filter: invert(0.9) hue-rotate(180deg) brightness(0.8) contrast(1.2);
-}*/
+#map {
+  transition: filter 0.2s ease;
+  &.dark-theme {
+    filter: invert(0.9) hue-rotate(180deg) brightness(0.8) contrast(1.2);
+  }
+}
 
 .theme {
   font-size: 40px;
@@ -99,16 +113,13 @@ body {
     aspect-ratio: 1;
     border-radius: 1000px;
     background-color: rgb(100, 100, 100, 0.6em);
-    box-shadow: inset 0 0 10px var(--text-secondary);
+    box-shadow: inset 0 0 10px rgb(100 100 100 / 0.6);
 
     transition: left 0.2s ease;
   }
-  /*&:hover {
-    background-color: var(--text-primary);
-  }
-  &:hover::after {
+  &.shift::after {
     left: 75%;
-  }*/
+  }
 }
 
 h1 {
@@ -150,7 +161,7 @@ h1 {
 .btn {
   cursor: pointer;
   border: none;
-  background-color: black;
+  background-color: var(--bg-secondary);
   color: var(--text-accent);
   height: 100%;
   aspect-ratio: 1;
@@ -281,7 +292,14 @@ h1 {
   }
 }
 
-@media (width < 700px) {
+@media (width < 660px) {
+  .theme {
+    font-size: 30px;
+    top: 40px;
+    right: 4%;
+  }
+
+  /*
   .theme {
     aspect-ratio: 1;
     &::after {
@@ -289,9 +307,9 @@ h1 {
       display: none;
     }
   }
-  .dark {
+  #dark-theme {
     display: none;
-  }
+  }*/
   /*.theme {
     height: 30px;
     top: 44px;
@@ -349,18 +367,12 @@ h1 {
     height: 330px;
   }
   .theme {
-    font-size: 30px;
     top: 30px;
     right: 5%;
-    aspect-ratio: 2;
-    &::after {
-      display: block;
-      left: 25%;
-    }
   }
-  .dark {
+  /*#dark-theme {
     display: inline-flex;
-  }
+  }*/
   h1 {
     font-size: 30px;
     margin-top: 28px;
