@@ -1,5 +1,6 @@
 const searchInput = document.getElementById("search-input");
 const searchButton = document.getElementById("search-btn");
+const tipField = document.getElementById("tip");
 const ipAddressDisplay = document.getElementById("ip-display");
 const locationDisplay = document.getElementById("location-display");
 const timezoneDisplay = document.getElementById("timezone-display");
@@ -30,34 +31,40 @@ darkTheme.addEventListener("click", () => {
   }
 });
 
-const IP_API_KEY = "at_yKH4wGfEbDJtwoPMlgBVnZTWBokYV";
 let ipAddress = "";
 
-//const MAP_API_KEY = "0bcae193-03fd-45cf-a502-803af4391504";
-//const requestLink = `https://api-maps.yandex.ru/2.1/?apikey=${MAP_API_KEY}&lang=ru_RU`;
-
 async function request(ipAddress) {
-  const requestLink = `https://geo.ipify.org/api/v2/country,city?apiKey=${IP_API_KEY}&ipAddress=${ipAddress}`;
+  const requestLink = `http://ip-api.com/json/${ipAddress}`;
   try {
     const response = await fetch(requestLink);
     if (!response.ok) {
-      throw new Error("some error");
+      throw new Error("Ошибка сети");
     }
     const data = await response.json();
+    if (data.status !== "success") {
+      throw new Error("Некорректные данные");
+    }
+    ipAddress !== ""
+      ? (tipField.textContent = "Запрос выполнен")
+      : (tipField.textContent = "По умолчанию используется IP пользователя");
     displayData(data);
-    updateMap(data.location.lat, data.location.lng);
+    updateMap(data.lat, data.lon);
   } catch (error) {
     console.log(error);
     showError(error.message);
   }
 }
 
-function displayData({ ip, location, isp }) {
-  ipAddressDisplay.textContent = ip;
-  locationDisplay.textContent = `${location.country || "None"}, ${
-    location.city || "None"
-  }`;
-  timezoneDisplay.textContent = `UTC ${location.timezone}`;
+function showError(error) {
+  tipField.textContent = error;
+}
+
+function displayData({ query, country, city, timezone, isp }) {
+  ipAddressDisplay.textContent = query;
+  locationDisplay.textContent = `${country || "None"}, ${city || "None"}`;
+  timezoneDisplay.textContent = timezone
+    .replaceAll("/", " / ")
+    .replaceAll("_", "-");
   ispDisplay.textContent = isp || "None";
 }
 
@@ -72,38 +79,39 @@ function initMap() {
   });
 }
 
-function updateMap(lat, lng) {
+function updateMap(lat, lon) {
   if (!currentMarker) {
     currentMarker = new ymaps.Placemark(
-      [lat, lng],
+      [lat, lon],
       {
         balloonContent: `Location: <br>
       Lat: ${lat}<br>
-      Lng: ${lng}`,
+      Lng: ${lon}`,
       },
       {
         preset: "islands#redIcon",
       }
     );
     map.geoObjects.add(currentMarker);
-    map.setCenter([lat, lng]);
+    map.setCenter([lat, lon]);
   } else {
-    currentMarker.geometry.setCoordinates([lat, lng]);
-    map.panTo([lat, lng], {
+    currentMarker.geometry.setCoordinates([lat, lon]);
+    map.panTo([lat, lon], {
       duration: 1000,
       timingFunction: "ease-in-out",
     });
   }
 }
 
-function showError(error) {
-  //alert(error);
+async function pageLoad() {
+  await ymaps.ready(initMap);
+  await request(ipAddress);
 }
 
-request(ipAddress);
-ymaps.ready(initMap);
+pageLoad();
 
 searchButton.addEventListener("click", () => {
   ipAddress = searchInput.value;
+  console.log("*", ipAddress, "*");
   request(ipAddress);
 });

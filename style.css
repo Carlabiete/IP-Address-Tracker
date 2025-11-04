@@ -5,16 +5,20 @@
   --text-primary: #333;
   --text-secondary: #999;
   --text-accent: #fff;
+  --shadow-color-20: rgb(0 0 0/0.2);
+  --shadow-color-30: rgb(0 0 0/0.3);
 }
 
 [data-theme="dark"] {
   --bg-primary: #080808;
   /*--bg-accent: hsl(230, 55%, 65%);*/
   --bg-secondary: #222;
-  --bg-accent: hsl(240, 40%, 10%);
+  --bg-accent: hsl(240, 45%, 13%);
   --text-primary: #bbb;
   --text-secondary: #555;
   --text-accent: #bbb;
+  --shadow-color-20: rgb(255 255 255/0.2);
+  --shadow-color-30: rgb(255 255 255/0.3);
 }
 
 @font-face {
@@ -26,7 +30,15 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 1s ease;
+}
+
+button {
+  outline: none;
+  border: none;
+  font: inherit;
+  background-color: transparent;
+  cursor: pointer;
 }
 
 body {
@@ -50,7 +62,7 @@ body {
   background-color: var(--bg-accent);
   height: 330px;
   position: relative;
-  box-shadow: 0 0 20px 0 rgb(0 0 0/0.3);
+  box-shadow: 0 0 20px 0 var(--shadow-color-30);
   z-index: 1;
 }
 
@@ -58,7 +70,6 @@ body {
   z-index: 0;
   background-color: #ddd;
   flex: 1;
-  /*box-shadow: inset 0 0px 20px rgb(0 0 0 / 0.5);*/
 }
 
 #map {
@@ -82,21 +93,19 @@ body {
   justify-content: space-between;
   align-items: center;
 
-  box-shadow: 0 0 20px 0 rgb(0 0 0 / 0.2);
+  box-shadow: 0 0 20px 0 var(--shadow-color-20);
 
   transition: background-color 0.2s ease;
 
   > * {
-    cursor: pointer;
     height: 100%;
     aspect-ratio: 1;
     border-radius: 1000px;
     margin: auto;
-    /*z-index: 1;*/
+
     font-size: 0.6em;
     line-height: 0;
     overflow: visible;
-    /*background-color: var(--bg-accent);*/
 
     display: inline-flex;
     justify-content: center;
@@ -131,18 +140,27 @@ h1 {
   color: var(--text-accent);
 }
 
-.searchbar {
+.searchbar,
+.tip {
   position: relative;
   left: 50%;
   translate: -50%;
-  height: 68px;
   max-width: 654px;
   width: 654px;
+}
+
+.searchbar {
+  height: 68px;
   z-index: 4;
   border-radius: 18px;
   overflow: hidden;
   display: flex;
   justify-content: space-between;
+}
+
+.tip {
+  color: var(--text-accent);
+  margin-top: 10px;
 }
 
 .input {
@@ -176,7 +194,7 @@ h1 {
   background-color: rgb(90, 90, 90);
 }
 
-.three {
+.main-data-container {
   position: absolute;
   left: 50%;
   bottom: 0;
@@ -192,10 +210,10 @@ h1 {
   grid-template-columns: repeat(4, 1fr);
 
   background-color: var(--bg-primary);
-  box-shadow: 0 0 40px 0px rgb(0 0 0 / 0.2);
+  box-shadow: 0 0 40px 0px var(--shadow-color-20);
 }
 
-.holder {
+.data-holder {
   position: relative;
   height: 102px;
   max-width: 100%;
@@ -218,7 +236,7 @@ h1 {
   }
 }
 
-.label {
+.data-label {
   font-size: 14px;
   font-weight: 600;
   color: var(--text-secondary);
@@ -226,14 +244,14 @@ h1 {
   text-transform: uppercase;
 }
 
-.text {
+.data {
   max-width: 100%;
   color: var(--text-primary);
   font-size: 32px;
   font-weight: 500;
   letter-spacing: -0.03em;
-  line-height: 1;
-  max-height: 2.1em;
+  line-height: 1.05;
+  max-height: 2.15em;
   flex: 1;
 
   display: -webkit-box;
@@ -244,19 +262,21 @@ h1 {
 }
 
 @media (width < 1300px) {
-  .searchbar {
+  .searchbar,
+  .tip {
     width: 70%;
   }
-  .three {
+  .main-data-container {
+    transform: translateY(15%);
     width: 70%;
     height: auto;
     grid-template-columns: repeat(2, 1fr);
     row-gap: 30px;
   }
-  .holder {
+  .data-holder {
     height: auto;
   }
-  .text {
+  .data {
     white-space: nowrap;
     line-height: 1.2;
   }
@@ -264,30 +284,31 @@ h1 {
 
 @media (width < 850px) {
   body {
-    /*background-image: url(./uitbvuyjrnifyp6q3zuf.jpg);*/
     height: 1100px;
   }
   .one {
     height: 450px;
   }
-  .searchbar {
+  .searchbar,
+  .tip {
     max-width: 500px;
     width: 87%;
   }
-  .three {
+  .main-data-container {
+    transform: translateY(5%);
     max-width: 500px;
     width: 87%;
     grid-template-columns: 1fr;
     row-gap: 30px;
   }
-  .holder {
+  .data-holder {
     align-items: center;
     text-align: center;
     &::before {
       display: none;
     }
   }
-  .text {
+  .data {
     font-size: 30px;
   }
 }
@@ -298,66 +319,7 @@ h1 {
     top: 40px;
     right: 4%;
   }
-
-  /*
-  .theme {
-    aspect-ratio: 1;
-    &::after {
-      left: 50%;
-      display: none;
-    }
-  }
-  #dark-theme {
-    display: none;
-  }*/
-  /*.theme {
-    height: 30px;
-    top: 44px;
-    right: 5%;
-    aspect-ratio: 2;
-    &::after {
-      display: block;
-      left: 25%;
-    }
-  }
-  .dark {
-    display: inline-flex;
-  }*/
 }
-
-/*
-@media (width < 540px) {
-  .one {
-    height: 300px;
-  }
-  h1 {
-    font-size: 28px;
-    margin-block: 25px;
-  }
-  .four {
-    height: 60px;
-    background-color: transparent;
-  }
-  .input {
-    font-size: 18px;
-  }
-  .three {
-    translate: -50% 55%;
-    row-gap: 25px;
-    padding-block: 25px;
-  }
-  .holder {
-    gap: 10px;
-  }
-  .label {
-    font-size: 10px;
-    font-weight: 700;
-  }
-  .text {
-    font-size: 20px;
-  }
-}
-*/
 
 @media (width < 540px) {
   body {
@@ -370,36 +332,59 @@ h1 {
     top: 30px;
     right: 5%;
   }
-  /*#dark-theme {
-    display: inline-flex;
-  }*/
   h1 {
     font-size: 30px;
     margin-top: 28px;
     margin-bottom: 30px;
   }
-  .searchbar {
+  .searchbar,
+  .tip {
     max-width: 400px;
+  }
+  .searchbar {
     height: 65px;
+    border-radius: 16px;
+  }
+  .tip {
+    font-size: 14px;
   }
   .input {
     padding-left: 24px;
     font-size: 20px;
   }
-  .three {
+  .main-data-container {
     max-width: 400px;
-    translate: -50% 56%;
+    transform: translateY(15%);
     row-gap: 26px;
     padding-block: 28px;
   }
-  .holder {
+  .data-holder {
     gap: 8px;
   }
-  .label {
+  .data-label {
     font-size: 11px;
     font-weight: 700;
   }
-  .text {
+  .data {
     font-size: 24px;
+  }
+}
+
+@media (width < 440px) {
+  h1 {
+    font-size: 24px;
+  }
+  .searchbar {
+    height: 52px;
+    border-radius: 14px;
+  }
+  .input {
+    font-size: 16px;
+  }
+  .btn {
+    font-size: 14px;
+  }
+  .main-data-container {
+    transform: translateY(8%);
   }
 }

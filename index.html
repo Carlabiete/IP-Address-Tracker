@@ -11,8 +11,8 @@
     <div class="flex">
       <div class="one">
         <div class="theme" id="theme-switch">
-          <div id="light-theme">☀️</div>
-          <div id="dark-theme">🌑</div>
+          <button id="light-theme">☀️</button>
+          <button id="dark-theme">🌑</button>
         </div>
         <h1>IP Address Tracker</h1>
         <div class="searchbar">
@@ -24,23 +24,26 @@
           />
           <button type="submit" class="btn" id="search-btn">go</button>
         </div>
+        <div class="tip" id="tip">
+          По умолчанию используется IP пользователя
+        </div>
 
-        <div class="three">
-          <div class="holder">
-            <span class="label">IP Address</span>
-            <span class="text" id="ip-display">000.000.000.000</span>
+        <div class="main-data-container">
+          <div class="data-holder">
+            <span class="data-label">IP Address</span>
+            <span class="data" id="ip-display">000.000.000.000</span>
           </div>
-          <div class="holder">
-            <span class="label">Location</span>
-            <span class="text" id="location-display">Location</span>
+          <div class="data-holder">
+            <span class="data-label">Location</span>
+            <span class="data" id="location-display">Location</span>
           </div>
-          <div class="holder">
-            <span class="label">Timezone</span>
-            <span class="text" id="timezone-display">UTC 00:00</span>
+          <div class="data-holder">
+            <span class="data-label">Timezone</span>
+            <span class="data" id="timezone-display">UTC 00:00</span>
           </div>
-          <div class="holder">
-            <span class="label">ISP</span>
-            <span class="text" id="isp-display">ISP</span>
+          <div class="data-holder">
+            <span class="data-label">ISP</span>
+            <span class="data" id="isp-display">ISP</span>
           </div>
         </div>
       </div>
