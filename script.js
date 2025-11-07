@@ -33,34 +33,39 @@ darkTheme.addEventListener("click", () => {
 
 let ipAddress = "";
 
-async function request(ipAddress) {
-  const requestLink = `http://ip-api.com/json/${ipAddress}`;
-  try {
-    const response = await fetch(requestLink);
-    if (!response.ok) {
-      throw new Error("Ошибка сети");
-    }
-    const data = await response.json();
-    if (data.status !== "success") {
-      throw new Error("Некорректные данные");
-    }
-    ipAddress !== ""
-      ? (tipField.textContent = "Запрос выполнен")
-      : (tipField.textContent = "По умолчанию используется IP пользователя");
-    displayData(data);
-    updateMap(data.lat, data.lon);
-  } catch (error) {
-    console.log(error);
-    showError(error.message);
-  }
+function request(ipAddress) {
+  showMessage("Идет запрос...");
+  const script = document.createElement("script");
+  script.src = `https://ipinfo.io/${ipAddress}/json?callback=showIP`;
+  document.body.appendChild(script);
+
+  const timeout = setTimeout(() => {
+    showMessage("API не отвечает. Попробуйте позже");
+    document.body.removeChild(script);
+  }, 5000);
+
+  script.onload = () => clearTimeout(timeout);
+  script.onerror = () => {
+    clearTimeout(timeout);
+    console.error("Скрипт не загрузился. Проверьте URL:", script.src);
+    showMessage("Ошибка загрузки данных");
+  };
 }
 
-function showError(error) {
-  tipField.textContent = error;
+function showIP(data) {
+  ipAddress !== ""
+    ? (tipField.textContent = "Запрос выполнен")
+    : (tipField.textContent = "По умолчанию используется IP пользователя");
+  displayData(data);
+  updateMap(data.loc);
 }
 
-function displayData({ query, country, city, timezone, isp }) {
-  ipAddressDisplay.textContent = query;
+function showMessage(message) {
+  tipField.textContent = message;
+}
+
+function displayData({ ip, country, city, timezone, isp }) {
+  ipAddressDisplay.textContent = ip;
   locationDisplay.textContent = `${country || "None"}, ${city || "None"}`;
   timezoneDisplay.textContent = timezone
     .replaceAll("/", " / ")
@@ -79,7 +84,10 @@ function initMap() {
   });
 }
 
-function updateMap(lat, lon) {
+function updateMap(loc) {
+  loc = loc.split(",");
+  const lat = loc[0];
+  const lon = loc[1];
   if (!currentMarker) {
     currentMarker = new ymaps.Placemark(
       [lat, lon],
@@ -105,13 +113,12 @@ function updateMap(lat, lon) {
 
 async function pageLoad() {
   await ymaps.ready(initMap);
-  await request(ipAddress);
+  request(ipAddress);
 }
 
 pageLoad();
 
 searchButton.addEventListener("click", () => {
   ipAddress = searchInput.value;
-  console.log("*", ipAddress, "*");
   request(ipAddress);
 });
