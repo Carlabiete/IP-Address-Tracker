@@ -292,6 +292,9 @@ h1 {
   }
   .data-holder {
     height: auto;
+    &:nth-child(odd)::before {
+      display: none;
+    }
   }
   .data {
     white-space: nowrap;
