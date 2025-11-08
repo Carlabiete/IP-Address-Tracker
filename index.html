@@ -16,13 +16,16 @@
         </div>
         <h1>IP Address Tracker</h1>
         <div class="searchbar">
-          <input
-            type="text"
-            placeholder="Search for any IP address or domain"
-            class="input"
-            id="search-input"
-          />
-          <button type="submit" class="btn" id="search-btn">go</button>
+          <div class="input-wrapper">
+            <input
+              type="text"
+              placeholder="Search for any IP address or domain"
+              class="input"
+              id="search-input"
+            />
+            <button type="button" class="clear-btn" id="clear-btn">✕</button>
+          </div>
+          <button type="submit" class="search-btn" id="search-btn">go</button>
         </div>
         <div class="tip" id="tip">
           По умолчанию используется IP пользователя
@@ -42,8 +45,8 @@
             <span class="data" id="timezone-display">UTC 00:00</span>
           </div>
           <div class="data-holder">
-            <span class="data-label">ISP</span>
-            <span class="data" id="isp-display">ISP</span>
+            <span class="data-label">ASN</span>
+            <span class="data" id="isp-display">None</span>
           </div>
         </div>
       </div>

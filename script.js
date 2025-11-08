@@ -1,4 +1,5 @@
 const searchInput = document.getElementById("search-input");
+const clearButton = document.getElementById("clear-btn");
 const searchButton = document.getElementById("search-btn");
 const tipField = document.getElementById("tip");
 const ipAddressDisplay = document.getElementById("ip-display");
@@ -42,6 +43,7 @@ function request(ipAddress) {
   const timeout = setTimeout(() => {
     showMessage("API не отвечает. Попробуйте позже");
     document.body.removeChild(script);
+    return;
   }, 5000);
 
   script.onload = () => clearTimeout(timeout);
@@ -53,9 +55,14 @@ function request(ipAddress) {
 }
 
 function showIP(data) {
-  ipAddress !== ""
-    ? (tipField.textContent = "Запрос выполнен")
-    : (tipField.textContent = "По умолчанию используется IP пользователя");
+  if (ipAddress !== "") {
+    if (data?.bogon) {
+      showMessage("Немаршрутизируемый адрес (bogon IP)");
+      return;
+    } else showMessage("Запрос выполнен");
+  } else {
+    showMessage("По умолчанию используется IP пользователя");
+  }
   displayData(data);
   updateMap(data.loc);
 }
@@ -123,7 +130,39 @@ async function pageLoad() {
 
 pageLoad();
 
+function validateIP(str) {
+  const invalidMessages = {
+    1: "IP должен быть в формате 255.255.255.255",
+    2: "Числа должна быть в диапазоне от 0 до 255",
+  };
+
+  if (str === "") return true;
+
+  const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
+  if (!ipRegex.test(str)) {
+    showMessage(invalidMessages["1"]);
+    return false;
+  }
+
+  if (
+    !str.split(".").every((segment) => {
+      const num = parseInt(segment);
+      return num >= 0 && num <= 255;
+    })
+  ) {
+    showMessage(invalidMessages["2"]);
+    return false;
+  } else {
+    return true;
+  }
+}
+
+clearButton.addEventListener("click", () => {
+  if (searchInput.value) searchInput.value = "";
+});
+
 searchButton.addEventListener("click", () => {
+  if (!validateIP(searchInput.value)) return;
   ipAddress = searchInput.value;
   request(ipAddress);
 });
