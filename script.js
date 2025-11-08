@@ -64,13 +64,13 @@ function showMessage(message) {
   tipField.textContent = message;
 }
 
-function displayData({ ip, country, city, timezone, isp }) {
+function displayData({ ip, country, city, timezone, org }) {
   ipAddressDisplay.textContent = ip;
   locationDisplay.textContent = `${country || "None"}, ${city || "None"}`;
   timezoneDisplay.textContent = timezone
     .replaceAll("/", " / ")
     .replaceAll("_", "-");
-  ispDisplay.textContent = isp || "None";
+  ispDisplay.textContent = org || "None";
 }
 
 let map = null;
@@ -86,8 +86,8 @@ function initMap() {
 
 function updateMap(loc) {
   loc = loc.split(",");
-  const lat = loc[0];
-  const lon = loc[1];
+  const lat = parseFloat(loc[0]);
+  const lon = parseFloat(loc[1]);
   if (!currentMarker) {
     currentMarker = new ymaps.Placemark(
       [lat, lon],
@@ -104,6 +104,11 @@ function updateMap(loc) {
     map.setCenter([lat, lon]);
   } else {
     currentMarker.geometry.setCoordinates([lat, lon]);
+    currentMarker.properties.set({
+      balloonContent: `Location: <br>
+    Lat: ${lat}<br>
+    Lng: ${lon}`,
+    });
     map.panTo([lat, lon], {
       duration: 1000,
       timingFunction: "ease-in-out",
@@ -113,7 +118,7 @@ function updateMap(loc) {
 
 async function pageLoad() {
   await ymaps.ready(initMap);
-  request(ipAddress);
+  await request(ipAddress);
 }
 
 pageLoad();
