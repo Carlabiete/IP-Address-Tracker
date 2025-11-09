@@ -11,7 +11,6 @@
 
 [data-theme="dark"] {
   --bg-primary: #080808;
-  /*--bg-accent: hsl(230, 55%, 65%);*/
   --bg-secondary: #222;
   --bg-accent: hsl(240, 45%, 13%);
   --text-primary: #bbb;
@@ -179,12 +178,16 @@ h1 {
   font-family: inherit;
   font-size: inherit;
   font-size: 22px;
-  color: #444;
+  color: var(--text-primary);
   font-weight: 500;
   background-color: transparent;
+  ::placeholder {
+    color: var(--text-secondary);
+  }
 }
 
 .clear-btn {
+  display: none;
   color: var(--text-primary);
   background-color: transparent;
   align-self: center;

@@ -33,6 +33,7 @@ darkTheme.addEventListener("click", () => {
 });
 
 let ipAddress = "";
+let isSuccess = undefined;
 
 function request(ipAddress) {
   showMessage("Идет запрос...");
@@ -43,6 +44,7 @@ function request(ipAddress) {
   const timeout = setTimeout(() => {
     showMessage("API не отвечает. Попробуйте позже");
     document.body.removeChild(script);
+    isSuccess = false;
     return;
   }, 5000);
 
@@ -51,20 +53,24 @@ function request(ipAddress) {
     clearTimeout(timeout);
     console.error("Скрипт не загрузился. Проверьте URL:", script.src);
     showMessage("Ошибка загрузки данных");
+    isSuccess = false;
   };
 }
 
 function showIP(data) {
-  if (ipAddress !== "") {
-    if (data?.bogon) {
-      showMessage("Немаршрутизируемый адрес (bogon IP)");
-      return;
-    } else showMessage("Запрос выполнен");
-  } else {
-    showMessage("По умолчанию используется IP пользователя");
+  if (data) {
+    isSuccess = true;
+    if (ipAddress !== "") {
+      if (data?.bogon) {
+        showMessage("Немаршрутизируемый адрес (bogon IP)");
+        return;
+      } else showMessage("Запрос выполнен");
+    } else {
+      showMessage("По умолчанию используется IP пользователя");
+    }
+    displayData(data);
+    updateMap(data.loc);
   }
-  displayData(data);
-  updateMap(data.loc);
 }
 
 function showMessage(message) {
@@ -123,13 +129,6 @@ function updateMap(loc) {
   }
 }
 
-async function pageLoad() {
-  await ymaps.ready(initMap);
-  await request(ipAddress);
-}
-
-pageLoad();
-
 function validateIP(str) {
   const invalidMessages = {
     1: "IP должен быть в формате 255.255.255.255",
@@ -157,12 +156,39 @@ function validateIP(str) {
   }
 }
 
-clearButton.addEventListener("click", () => {
-  if (searchInput.value) searchInput.value = "";
-});
-
-searchButton.addEventListener("click", () => {
+function handleSearch() {
+  if (searchInput.value === ipAddress && isSuccess) return;
   if (!validateIP(searchInput.value)) return;
   ipAddress = searchInput.value;
   request(ipAddress);
+}
+
+async function pageLoad() {
+  await ymaps.ready(initMap);
+  request(ipAddress);
+}
+
+pageLoad();
+
+searchInput.addEventListener("input", () => {
+  searchInput.value
+    ? (clearButton.style.display = "block")
+    : (clearButton.style.display = "none");
+});
+
+clearButton.addEventListener("click", () => {
+  searchInput.value = "";
+  clearButton.style.display = "none";
+  searchInput.focus();
+});
+
+searchButton.addEventListener("click", () => {
+  handleSearch();
+});
+
+searchInput.addEventListener("keypress", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    handleSearch();
+  }
 });
